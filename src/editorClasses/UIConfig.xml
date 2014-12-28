@@ -9,7 +9,7 @@
     </Panel>
 
     <!-- PARTICLE KIND-->
-    <Panel x="10" y="70" width="95" height="115">
+    <Panel x="10" y="70" width="95" height="140">
         <VBox x="10" y="10">
             <Label text="PARTICLE KIND:"/>
             <RadioButton id="snowFlake" label="Snowflake" groupName="particleKind" event="click:onParticleKindChange"
@@ -18,33 +18,35 @@
             <RadioButton id="shoe" label="Shoe" groupName="particleKind" event="click:onParticleKindChange"/>
             <RadioButton id="badger" label="Killer Badger" groupName="particleKind" event="click:onParticleKindChange"/>
             <RadioButton id="jens" label="Jens" groupName="particleKind" event="click:onParticleKindChange"/>
+            <RadioButton id="gold" label="Gold" groupName="particleKind" event="click:onParticleKindChange"/>
+            <RadioButton id="coin" label="Coin" groupName="particleKind" event="click:onParticleKindChange"/>
         </VBox>
     </Panel>
 
     <!-- PARTICLE MOVE-->
-    <Panel x="110" y="70" width="280" height="115">
+    <Panel x="110" y="70" width="280" height="140">
         <Label x="10" y="10" text="PARTICLE MOVE:"/>
         <VBox x="10" y="30">
-            <Label id="particleSpeedXLabel" text="Speed X: 2"/>
-            <HSlider id="particleSpeedXSlider" width="125" tick="0.1" minimum="-50" maximum="50" value="1"
+            <Label id="particleSpeedXLabel" text="Speed X: 0"/>
+            <HSlider id="particleSpeedXSlider" width="125" tick="0.1" minimum="-30" maximum="30" value="0"
                      event="change:onParticleSpeedXChange"/>
-            <Label id="particleSpreadXLabel" text="Spread X: 0.5"/>
-            <HSlider id="particleSpreadXSlider" width="125" tick="0.1" minimum="0" maximum="50" value="1"
+            <Label id="particleSpreadXLabel" text="Spread X: 2"/>
+            <HSlider id="particleSpreadXSlider" width="125" tick="0.1" minimum="0" maximum="30" value="2"
                      event="change:onParticleSpreadXChange"/>
         </VBox>
 
         <VBox x="145" y="30">
-            <Label id="particleSpeedYLabel" text="Speed Y: 2"/>
-            <HSlider id="particleSpeedYSlider" width="125" tick="0.1" minimum="-50" maximum="50" value="1.7"
+            <Label id="particleSpeedYLabel" text="Speed Y: 0"/>
+            <HSlider id="particleSpeedYSlider" width="125" tick="0.1" minimum="-30" maximum="30" value="0"
                      event="change:onParticleSpeedYChange"/>
-            <Label id="particleSpreadYLabel" text="Spread Y: 0.5"/>
-            <HSlider id="particleSpreadYSlider" width="125" tick="0.1" minimum="0" maximum="50" value="0.7"
+            <Label id="particleSpreadYLabel" text="Spread Y: 2"/>
+            <HSlider id="particleSpreadYSlider" width="125" tick="0.1" minimum="0" maximum="30" value="2"
                      event="change:onParticleSpreadYChange"/>
         </VBox>
     </Panel>
 
     <!-- PARTICLE SIZE-->
-    <Panel x="10" y="190" width="380" height="85">
+    <Panel x="10" y="215" width="380" height="85">
         <CheckBox x="10" y="15" id="particleSizeCheckbox" selected="true" event="click:particleSizeCheckboxChange"/>
         <Label x="25" y="10" text="PARTICLE SIZE:"/>
         <VBox x="10" y="30">
@@ -66,7 +68,7 @@
     </Panel>
 
     <!-- PARTICLE ALPHA-->
-    <Panel x="10" y="280" width="380" height="85">
+    <Panel x="10" y="305" width="380" height="85">
         <CheckBox x="10" y="15" id="particleAlphaCheckbox" selected="true" event="click:particleAlphaCheckboxChange"/>
         <Label x="25" y="10" text="PARTICLE ALPHA:"/>
         <VBox x="10" y="30">
@@ -88,7 +90,7 @@
     </Panel>
 
     <!-- PARTICLE ROTATION-->
-    <Panel x="10" y="370" width="380" height="80">
+    <Panel x="10" y="395" width="380" height="130">
         <CheckBox x="10" y="15" id="particleRotationCheckbox" selected="true"
                   event="click:particleRotationCheckboxChange"/>
         <Label x="25" y="10" text="PARTICLE ROTATION:"/>
@@ -98,11 +100,11 @@
                     <VBox>
                         <Label id="particleRotationRangeLabel" text="Range:" height="100"/>
                         <HBox/>
-                        <HRangeSlider y="80" id="particleRotationRangeSlider" width="120" tick="0.1" minimum="-20"
-                                      maximum="20" lowValue="-3" highValue="3" event="change:onRangeSliderChange"/>
+                        <HRangeSlider y="80" id="particleRotationRangeSlider" width="120" tick="0.1" minimum="0"
+                                      maximum="25" lowValue="2" highValue="8" event="change:onRangeSliderChange"/>
                     </VBox>
                     <VBox>
-                        <Label id="particleRotationSegmentsLabel" text="Segments: 6"/>
+                        <Label id="particleRotationSegmentsLabel" text="Segments: 1"/>
                         <HBox/>
                         <HSlider id="particleRotationSegmentsSlider" width="70" tick="1" minimum="1" maximum="70"
                                  value="6" event="change:onParticleRotationSegmentsChange"/>
@@ -116,5 +118,9 @@
                 </HBox>
             </VBox>
         </HBox>
+
+        <CheckBox x="10" y="95" id="animateBothDirectionsCheckbox" selected="true"
+                  event="click:animateBothDirectionsCheckboxChange"/>
+        <Label x="25" y="90" text="rotate both directions:"/>
     </Panel>
 </comps>

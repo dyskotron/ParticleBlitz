@@ -42,6 +42,8 @@ package editorClasses
         public var banana: RadioButton;
         public var shoe: RadioButton;
         public var jens: RadioButton;
+        public var gold: RadioButton;
+        public var coin: RadioButton;
 
         //Labels
         public var numParticlesLabel: Label;
@@ -61,6 +63,7 @@ package editorClasses
         public var particleSizeCheckbox: CheckBox;
         public var particleAlphaCheckbox: CheckBox;
         public var particleRotationCheckbox: CheckBox;
+        public var animateBothDirectionsCheckbox: CheckBox;
 
         private var warningPopUp: Sprite;
         private var directionEditorRect: Rectangle;
@@ -135,6 +138,10 @@ package editorClasses
                 KindClass = Shoe;
             else if (jens.selected)
                 KindClass = Jens;
+            else if (coin.selected)
+                KindClass = CoinAnim;
+            else if (gold.selected)
+                KindClass = GoldAnim;
 
             return KindClass;
         }
@@ -188,6 +195,11 @@ package editorClasses
         public function onParticleRotationSmoothChange(e: Event): void
         {
             particleRotationSmoothLabel.text = "Smooth: " + particleRotationSmoothSlider.value;
+            enginePropertyChanged();
+        }
+
+        public function animateBothDirectionsCheckboxChange(e: Event): void
+        {
             enginePropertyChanged();
         }
 

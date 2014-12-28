@@ -4,6 +4,7 @@ package
     import editorClasses.ParticleEditor;
 
     import engineClasses.ParticleEngine;
+    import engineClasses.RandomMovieClipAnimator;
 
     import flash.display.Sprite;
     import flash.display.StageAlign;
@@ -25,7 +26,6 @@ package
 
             //create engine
             engine = new ParticleEngine();
-            engine.init();
             addChild(engine);
 
             //draw engine bacground

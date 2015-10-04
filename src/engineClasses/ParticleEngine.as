@@ -1,10 +1,14 @@
 package engineClasses
 {
 
+    import engineClasses.sheetGenerator.DisplayObjectRenderer;
+    import engineClasses.sheetGenerator.MovieClipRenderer;
+
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display.Sprite;
     import flash.events.Event;
+    import flash.geom.Point;
     import flash.geom.Rectangle;
 
     /**
@@ -14,23 +18,35 @@ package engineClasses
     {
 
         // rendering area
-        public var particleAreaWidth: int = 740;
-        public var particleAreaHeight: int = 640;
+        private var _particleAreaWidth: int = 740;
+        private var _particleAreaHeight: int = 640;
 
         //// --------------------------------------------------------------------- ////
 
-        private var animator: ParticleAnimator;
+        private var _emitter: ParticleAnimator;
 
-        private var screenBitMap: Bitmap;
-        private var screenBitmapData: BitmapData;
+        private var _screenBitMap: Bitmap;
+        private var _screenBitmapData: BitmapData;
 
-        private var screenRect: Rectangle = new Rectangle(0, 0, particleAreaWidth, particleAreaHeight);
+        private var _screenRect: Rectangle = new Rectangle(0, 0, _particleAreaWidth, _particleAreaHeight);
+
+
+        //emitter vars
+        //protected var _firstParticle: ParticleVO;
+        protected var _currentParticle: ParticleVO;
+        protected var _sourceRect: Rectangle;
+        protected var _destPoint: Point = new Point();
+        protected var _alphaPoint: Point = new Point();
+        private var _particlesBitmapSheet: BitmapData;
+        private var _alphaBitmapSheet: BitmapData;
 
         /**
          * Constructor
          */
-        public function ParticleEngine()
+        public function ParticleEngine(width: Number, height: Number)
         {
+            _particleAreaWidth = width;
+            _particleAreaHeight = height;
             super();
         }
 
@@ -39,18 +55,36 @@ package engineClasses
          */
         public function init(aAnimator: ParticleAnimator): void
         {
-            animator = aAnimator;
+            _emitter = aAnimator;
 
             //CREATE SCREEN BITMAP
-            screenBitmapData = new BitmapData(particleAreaWidth, particleAreaHeight, true);
-            screenBitmapData.fillRect(screenRect, 0x0000000);
-            screenBitMap = new Bitmap(screenBitmapData);
-            addChild(screenBitMap);
+            _screenBitmapData = new BitmapData(_particleAreaWidth, _particleAreaHeight, true);
+            _screenBitmapData.fillRect(_screenRect, 0x0000000);
+            _screenBitMap = new Bitmap(_screenBitmapData);
+            addChild(_screenBitMap);
 
             //INIT EMMITER
-            animator.particleAreaWidth = particleAreaWidth;
-            animator.particleAreaHeight = particleAreaHeight;
-            animator.init(screenBitmapData);
+            _emitter.particleAreaWidth = _particleAreaWidth;
+            _emitter.particleAreaHeight = _particleAreaHeight;
+            _emitter.init(_screenBitmapData);
+
+            //spriteSheet renderer
+            var generator: SpriteSheetRenderer = _emitter is RandomMovieClipAnimator ? new MovieClipRenderer(_emitter.particleDOClass) : new DisplayObjectRenderer(_emitter.particleDOClass);
+            generator.minSize = _emitter.minParticleSize;
+            generator.maxSize = _emitter.maxParticleSize;
+            generator.sizeSmooth = _emitter.sizeSmooth;
+            generator.minAlpha = _emitter.minAlpha;
+            generator.maxAlpha = _emitter.maxAlpha;
+            generator.alphaSmooth = _emitter.alphaSmooth;
+            generator.animSmooth = _emitter.rotationSegmentSmooth;
+            generator.render();
+
+            _particlesBitmapSheet = generator.animSpriteSheet;
+            _alphaBitmapSheet = generator.alphaSpriteSheet;
+            //_particlesBitmapSheet = _emitter.particlesBitmapSheet;
+            //_alphaBitmapSheet = _emitter.alphaBitmapSheet;
+
+            _sourceRect = new Rectangle(0, 0, _emitter.maxParticleSize, _emitter.maxParticleSize);
 
             addEventListener(Event.ENTER_FRAME, enterFrameHandler);
         }
@@ -62,14 +96,14 @@ package engineClasses
         {
             removeEventListener(Event.ENTER_FRAME, enterFrameHandler);
 
-            if (screenBitMap)
+            if (_screenBitMap)
             {
-                removeChild(screenBitMap);
-                screenBitMap = null;
+                removeChild(_screenBitMap);
+                _screenBitMap = null;
             }
-            screenBitmapData = null;
-            if (animator)
-                animator.destroy();
+            _screenBitmapData = null;
+            if (_emitter)
+                _emitter.destroy();
         }
 
         /**
@@ -78,14 +112,37 @@ package engineClasses
          */
         private function enterFrameHandler(event: Event): void
         {
-            screenBitmapData.lock();
+            _screenBitmapData.lock();
 
             //erase screen
-            screenBitmapData.fillRect(screenRect, 0x20ff0000);
+            _screenBitmapData.fillRect(_screenRect, 0x00000000);
 
-            animator.drawFrame();
+            _emitter.drawFrame();
 
-            screenBitmapData.unlock();
+            //===========================================
+            _currentParticle = _emitter._firstParticle;
+
+            while (_currentParticle)
+            {
+                //draw
+                _destPoint.x = _currentParticle.x;
+                _destPoint.y = _currentParticle.y;
+
+                _sourceRect.width = _sourceRect.height = _currentParticle.size;
+                _sourceRect.x = _currentParticle.rotationIndex * _emitter.maxParticleSize;
+                _sourceRect.y = _currentParticle.scaleIndex * _emitter.maxParticleSize;
+
+                _alphaPoint.x = _currentParticle.alphaIndex * _emitter.maxParticleSize;
+
+                _screenBitmapData.copyPixels(_particlesBitmapSheet, _sourceRect, _destPoint, _alphaBitmapSheet, _alphaPoint, true);
+
+                _currentParticle = _currentParticle.nextParticle;
+            }
+
+
+            //===========================================
+
+            _screenBitmapData.unlock();
         }
     }
 }

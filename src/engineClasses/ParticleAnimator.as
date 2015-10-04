@@ -11,6 +11,11 @@ package engineClasses
         //size
         public var minParticleSize: Number = 10;
         public var maxParticleSize: Number = 20;
+
+        //alpha
+        public var minAlpha: Number = 0.3;
+        public var maxAlpha: Number = 1;
+        public var alphaSmooth: int = 10;
         public var sizeSmooth: Number = 10;
 
         //speed
@@ -18,11 +23,6 @@ package engineClasses
         public var maxSpeedX: Number = 1.5;
         public var minSpeedY: Number = 1;
         public var maxSpeedY: Number = 2.5;
-
-        //alpha
-        public var minAlpha: Number = 0.3;
-        public var maxAlpha: Number = 1;
-        public var alphaSmooth: int = 10;
 
         //rotation
         public var minRotationSpeed: Number = -3;
@@ -44,15 +44,15 @@ package engineClasses
         private var _particleAreaHeight: Number;
         private var _particleAreaWidth: Number;
 
-        protected var _firstParticle: ParticleVO;
+        internal var _firstParticle: ParticleVO;
         protected var _currentParticle: ParticleVO;
         protected var _sourceRect: Rectangle;
         protected var _destPoint: Point = new Point();
         protected var _alphaPoint: Point = new Point();
 
-        protected var _particleDOClass: Class = SnowFlake;
-        protected var _particlesBitmapSheet: BitmapData;
-        protected var _alphaBitmapSheet: BitmapData;
+        private var _particleDOClass: Class = SnowFlake;
+        internal var particlesBitmapSheet: BitmapData;
+        internal var alphaBitmapSheet: BitmapData;
         protected var _screenBitmapData: BitmapData;
 
 
@@ -108,18 +108,6 @@ package engineClasses
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
                     resetParticle(_currentParticle);
 
-                //draw
-                _destPoint.x = _currentParticle.x;
-                _destPoint.y = _currentParticle.y;
-
-                _sourceRect.width = _sourceRect.height = _currentParticle.size;
-                _sourceRect.x = _currentParticle.rotationIndex * maxParticleSize;
-                _sourceRect.y = _currentParticle.scaleIndex * maxParticleSize;
-
-                _alphaPoint.x = _currentParticle.alphaIndex * maxParticleSize;
-
-                _screenBitmapData.copyPixels(_particlesBitmapSheet, _sourceRect, _destPoint, _alphaBitmapSheet, _alphaPoint, true);
-
                 _currentParticle = _currentParticle.nextParticle;
             }
         }
@@ -127,15 +115,15 @@ package engineClasses
         public function destroy(): void
         {
             _currentParticle = null;
-            _particlesBitmapSheet = null;
-            _alphaBitmapSheet = null;
+            particlesBitmapSheet = null;
+            alphaBitmapSheet = null;
         }
 
         /**
          * Respawns particle
          * @param currentParticle
          */
-        protected function resetParticle(currentParticle): void
+        protected function resetParticle(currentParticle: ParticleVO): void
         {
 
         }
@@ -154,7 +142,7 @@ package engineClasses
          */
         protected function createAlphaBitmapData(): void
         {
-            _alphaBitmapSheet = new BitmapData(maxParticleSize * alphaSmooth, maxParticleSize, true, 0xff000000);
+            alphaBitmapSheet = new BitmapData(maxParticleSize * alphaSmooth, maxParticleSize, true, 0xff000000);
 
             var rect: Rectangle = new Rectangle(0, 0, maxParticleSize, maxParticleSize);
             var alpha: Number;
@@ -163,7 +151,7 @@ package engineClasses
             {
                 alpha = minAlpha + (i / alphaSmooth) * (maxAlpha - minAlpha);
                 rect.x = i * maxParticleSize;
-                _alphaBitmapSheet.fillRect(rect, (alpha * 255 << 24) | 0x000000);
+                alphaBitmapSheet.fillRect(rect, (alpha * 255 << 24) | 0x000000);
             }
         }
 
@@ -203,6 +191,11 @@ package engineClasses
         {
             _rotationSegments = value;
             rotationSegmentMaxDegree = 360 / _rotationSegments
+        }
+
+        public function get particleDOClass(): Class
+        {
+            return _particleDOClass;
         }
     }
 }

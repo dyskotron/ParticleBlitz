@@ -114,10 +114,6 @@ package editorClasses
                 animator.minRotationSpeed = animator.maxRotationSpeed = 0;
             }
 
-            // STAGE
-            engine.particleAreaWidth = 740;
-            engine.particleAreaHeight = 640;
-
             /**
              try
              {

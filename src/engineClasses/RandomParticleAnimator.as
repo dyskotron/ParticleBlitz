@@ -29,23 +29,11 @@ package engineClasses
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
                     resetParticle(_currentParticle);
 
-                //draw
-                _destPoint.x = _currentParticle.x;
-                _destPoint.y = _currentParticle.y;
-
-                _sourceRect.width = _sourceRect.height = _currentParticle.size;
-                _sourceRect.x = _currentParticle.rotationIndex * maxParticleSize;
-                _sourceRect.y = _currentParticle.scaleIndex * maxParticleSize;
-
-                _alphaPoint.x = _currentParticle.alphaIndex * maxParticleSize;
-
-                _screenBitmapData.copyPixels(_particlesBitmapSheet, _sourceRect, _destPoint, _alphaBitmapSheet, _alphaPoint, true);
-
                 _currentParticle = _currentParticle.nextParticle;
             }
         }
 
-        override protected function resetParticle(currentParticle): void
+        override protected function resetParticle(currentParticle: ParticleVO): void
         {
             //if out of stage recycle currentParticle
             if (currentParticle.y > _particleAreaMaxY)
@@ -64,11 +52,11 @@ package engineClasses
         override protected function createSpriteSheet(): void
         {
 
-            var particle: DisplayObject = new _particleDOClass();
+            var particle: DisplayObject = new particleDOClass();
             var flakeSprite: Sprite = new Sprite();
             flakeSprite.addChild(particle);
 
-            _particlesBitmapSheet = new BitmapData(maxParticleSize * rotationSegmentSmooth, maxParticleSize * sizeSmooth, true, 0x000000);
+            particlesBitmapSheet = new BitmapData(maxParticleSize * rotationSegmentSmooth, maxParticleSize * sizeSmooth, true, 0x000000);
             var flakeBitmapData: BitmapData = new BitmapData(maxParticleSize, maxParticleSize, true, 0x000000);
             var size: Number;
 
@@ -82,14 +70,14 @@ package engineClasses
                     size = minParticleSize + (maxParticleSize - minParticleSize) / sizeSmooth * iSize;
                     particle.scaleX = particle.scaleY = size / maxParticleSize * defaultScale;
                     particle.x = particle.y = size / 2;
-                    particle.rotation = 360 / rotationSegments / rotationSegmentSmooth * iRotation;
+                    particle.rotation = 360 / _rotationSegments / rotationSegmentSmooth * iRotation;
 
                     flakeBitmapData.fillRect(flakeBitmapData.rect, 0x000000);
                     flakeBitmapData.draw(flakeSprite, null, null, null, null, false);
 
                     _destPoint.x = iRotation * maxParticleSize;
                     _destPoint.y = iSize * maxParticleSize;
-                    _particlesBitmapSheet.copyPixels(flakeBitmapData, flakeBitmapData.rect, _destPoint);
+                    particlesBitmapSheet.copyPixels(flakeBitmapData, flakeBitmapData.rect, _destPoint);
                 }
             }
         }

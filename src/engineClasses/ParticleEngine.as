@@ -6,6 +6,8 @@ package engineClasses
 
     import flash.display.Bitmap;
     import flash.display.BitmapData;
+    import flash.display.DisplayObject;
+    import flash.display.MovieClip;
     import flash.display.Sprite;
     import flash.events.Event;
     import flash.geom.Point;
@@ -23,7 +25,7 @@ package engineClasses
 
         //// --------------------------------------------------------------------- ////
 
-        private var _emitter: ParticleAnimator;
+        private var _emitter: ParticleEmitter;
 
         private var _screenBitMap: Bitmap;
         private var _screenBitmapData: BitmapData;
@@ -53,7 +55,7 @@ package engineClasses
         /**
          * Initialize particle engineClasses
          */
-        public function init(aAnimator: ParticleAnimator): void
+        public function init(aAnimator: ParticleEmitter, aParticleDO: DisplayObject): void
         {
             _emitter = aAnimator;
 
@@ -66,23 +68,25 @@ package engineClasses
             //INIT EMMITER
             _emitter.particleAreaWidth = _particleAreaWidth;
             _emitter.particleAreaHeight = _particleAreaHeight;
+
+            if (aParticleDO is MovieClip && MovieClip(aParticleDO).totalFrames > 1)
+                _emitter.animSmooth = MovieClip(aParticleDO).totalFrames;
+
             _emitter.init(_screenBitmapData);
 
             //spriteSheet renderer
-            var generator: SpriteSheetRenderer = _emitter is RandomMovieClipAnimator ? new MovieClipRenderer(_emitter.particleDOClass) : new DisplayObjectRenderer(_emitter.particleDOClass);
+            var generator: SpriteSheetRenderer = _emitter is RandomMovieClipEmitter ? new MovieClipRenderer(_emitter.particleDOClass) : new DisplayObjectRenderer(_emitter.particleDOClass);
             generator.minSize = _emitter.minParticleSize;
             generator.maxSize = _emitter.maxParticleSize;
             generator.sizeSmooth = _emitter.sizeSmooth;
             generator.minAlpha = _emitter.minAlpha;
             generator.maxAlpha = _emitter.maxAlpha;
             generator.alphaSmooth = _emitter.alphaSmooth;
-            generator.animSmooth = _emitter.rotationSmooth;
+            generator.animSmooth = _emitter.animSmooth;
             generator.render();
 
             _particlesBitmapSheet = generator.animSpriteSheet;
             _alphaBitmapSheet = generator.alphaSpriteSheet;
-            //_particlesBitmapSheet = _emitter.particlesBitmapSheet;
-            //_alphaBitmapSheet = _emitter.alphaBitmapSheet;
 
             _sourceRect = new Rectangle(0, 0, _emitter.maxParticleSize, _emitter.maxParticleSize);
 

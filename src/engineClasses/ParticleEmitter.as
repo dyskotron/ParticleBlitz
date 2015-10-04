@@ -4,7 +4,7 @@ package engineClasses
     import flash.geom.Point;
     import flash.geom.Rectangle;
 
-    public class ParticleAnimator
+    public class ParticleEmitter
     {
         public var numParticles: Number = 250;
 
@@ -25,10 +25,9 @@ package engineClasses
         public var maxSpeedY: Number = 2.5;
 
         //rotation
-        public var minRotationSpeed: Number = -3;
-        public var maxRotationSpeed: Number = -3;
-
-        public var rotationSmooth: Number = 60;
+        public var minAnimSpeed: Number = -3;
+        public var maxAnimSpeed: Number = -3;
+        public var animSmooth: Number = 60;
         public var animateBothDirections: Boolean;
 
         public var _particleAreaMinX: int;
@@ -55,7 +54,7 @@ package engineClasses
         protected var _screenBitmapData: BitmapData;
 
 
-        public function ParticleAnimator()
+        public function ParticleEmitter()
         {
 
         }
@@ -84,8 +83,6 @@ package engineClasses
             _particleAreaMaxY = _particleAreaHeight + maxParticleSize;
             _sourceRect = new Rectangle(0, 0, maxParticleSize, maxParticleSize);
 
-            createSpriteSheet();
-            createAlphaBitmapData();
             createParticleVOs();
         }
 
@@ -101,7 +98,7 @@ package engineClasses
                 _currentParticle.y += _currentParticle.speedY;
                 _currentParticle.x += _currentParticle.speedX;
                 _currentParticle.rotation = (360 + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % 360;
-                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * rotationSmooth);
+                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * animSmooth);
 
                 //when out of stage recycle _currentParticle
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
@@ -128,33 +125,6 @@ package engineClasses
         }
 
         /**
-         * Creates sprite sheet
-         */
-        protected function createSpriteSheet(): void
-        {
-
-        }
-
-        /**
-         * Creates sprite sheet of rectangles with default alpha values
-         * used in rendering particles
-         */
-        protected function createAlphaBitmapData(): void
-        {
-            alphaBitmapSheet = new BitmapData(maxParticleSize * alphaSmooth, maxParticleSize, true, 0xff000000);
-
-            var rect: Rectangle = new Rectangle(0, 0, maxParticleSize, maxParticleSize);
-            var alpha: Number;
-
-            for (var i: int = 0; i <= alphaSmooth; i++)
-            {
-                alpha = minAlpha + (i / alphaSmooth) * (maxAlpha - minAlpha);
-                rect.x = i * maxParticleSize;
-                alphaBitmapSheet.fillRect(rect, (alpha * 255 << 24) | 0x000000);
-            }
-        }
-
-        /**
          *  Creates desired number of particle VOs
          */
         private function createParticleVOs(): void
@@ -176,7 +146,7 @@ package engineClasses
                 particle.speedY = (minSpeedY + Math.random() * (maxSpeedY - minSpeedY));
 
                 particle.rotation = Math.random() * 360;
-                particle.rotationSpeed = minRotationSpeed + Math.random() * (maxRotationSpeed - minRotationSpeed);
+                particle.rotationSpeed = minAnimSpeed + Math.random() * (maxAnimSpeed - minAnimSpeed);
                 if (animateBothDirections && Math.random() < 0.5)
                     particle.rotationSpeed *= -1;
 

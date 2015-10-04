@@ -1,9 +1,9 @@
 package editorClasses
 {
-    import engineClasses.ParticleAnimator;
+    import engineClasses.ParticleEmitter;
     import engineClasses.ParticleEngine;
-    import engineClasses.RandomMovieClipAnimator;
-    import engineClasses.RandomParticleAnimator;
+    import engineClasses.RandomMovieClipEmitter;
+    import engineClasses.RandomParticleEmitter;
 
     import flash.display.Sprite;
     import flash.events.Event;
@@ -17,7 +17,7 @@ package editorClasses
          */
 
         private var engine: ParticleEngine;
-        private var animator: ParticleAnimator;
+        private var animator: ParticleEmitter;
         private var emmiterClass: Class;
         private var editorUI: EditorUI;
         private var valuesChanged: Boolean = false;
@@ -60,9 +60,9 @@ package editorClasses
             if (animator)
                 animator.destroy();
 
-            emmiterClass = RandomParticleAnimator;
+            emmiterClass = RandomParticleEmitter;
             if (editorUI.ParticleKindClass == GoldAnim || editorUI.ParticleKindClass == CoinAnim)
-                emmiterClass = RandomMovieClipAnimator;
+                emmiterClass = RandomMovieClipEmitter;
 
             animator = new emmiterClass();
 
@@ -103,14 +103,14 @@ package editorClasses
             animator.maxSpeedY = speedY + spreadY / 2;
 
             //rotation
-            animator.minRotationSpeed = editorUI.particleRotationRangeSlider.lowValue;
-            animator.maxRotationSpeed = editorUI.particleRotationRangeSlider.highValue;
-            animator.rotationSmooth = editorUI.particleRotationSmoothSlider.value;
+            animator.minAnimSpeed = editorUI.particleRotationRangeSlider.lowValue;
+            animator.maxAnimSpeed = editorUI.particleRotationRangeSlider.highValue;
+            animator.animSmooth = editorUI.particleRotationSmoothSlider.value;
 
             if (!editorUI.particleRotationCheckbox.selected)
             {
-                animator.rotationSmooth = 1;
-                animator.minRotationSpeed = animator.maxRotationSpeed = 0;
+                animator.animSmooth = 1;
+                animator.minAnimSpeed = animator.maxAnimSpeed = 0;
             }
 
             /**
@@ -123,7 +123,7 @@ package editorClasses
              }
              */
 
-            engine.init(animator);
+            engine.init(animator, new editorUI.ParticleKindClass());
 
             if (!editorUI.particleRotationCheckbox.selected && !speedX && !speedY && !spreadX && !spreadY)
             {

@@ -28,7 +28,7 @@ package engineClasses
         public var minRotationSpeed: Number = -3;
         public var maxRotationSpeed: Number = -3;
 
-        public var rotationSegmentSmooth: Number = 60;
+        public var rotationSmooth: Number = 60;
         public var animateBothDirections: Boolean;
 
         public var _particleAreaMinX: int;
@@ -36,8 +36,7 @@ package engineClasses
         public var _particleAreaMinY: int;
         public var _particleAreaMaxY: int;
 
-        protected var _rotationSegments: Number = 6;
-        protected var rotationSegmentMaxDegree: Number = 360 / _rotationSegments;
+        protected var rotationSegmentMaxDegree: Number = 360;
 
         //=========//
 
@@ -101,8 +100,8 @@ package engineClasses
                 //update properties
                 _currentParticle.y += _currentParticle.speedY;
                 _currentParticle.x += _currentParticle.speedX;
-                _currentParticle.rotation = (rotationSegmentMaxDegree + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % rotationSegmentMaxDegree;
-                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / rotationSegmentMaxDegree * rotationSegmentSmooth);
+                _currentParticle.rotation = (360 + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % 360;
+                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * rotationSmooth);
 
                 //when out of stage recycle _currentParticle
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
@@ -185,12 +184,6 @@ package engineClasses
                 _currentParticle = particle;
             }
             _firstParticle = particle;
-        }
-
-        public function set rotationSegments(value: Number): void
-        {
-            _rotationSegments = value;
-            rotationSegmentMaxDegree = 360 / _rotationSegments
         }
 
         public function get particleDOClass(): Class

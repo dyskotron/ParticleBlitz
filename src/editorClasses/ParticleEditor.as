@@ -105,12 +105,11 @@ package editorClasses
             //rotation
             animator.minRotationSpeed = editorUI.particleRotationRangeSlider.lowValue;
             animator.maxRotationSpeed = editorUI.particleRotationRangeSlider.highValue;
-            animator.rotationSegments = editorUI.particleRotationSegmentsSlider.value;
-            animator.rotationSegmentSmooth = editorUI.particleRotationSmoothSlider.value;
+            animator.rotationSmooth = editorUI.particleRotationSmoothSlider.value;
 
             if (!editorUI.particleRotationCheckbox.selected)
             {
-                animator.rotationSegmentSmooth = 1;
+                animator.rotationSmooth = 1;
                 animator.minRotationSpeed = animator.maxRotationSpeed = 0;
             }
 

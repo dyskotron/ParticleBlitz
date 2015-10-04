@@ -24,8 +24,8 @@ package engineClasses
                 //update properties
                 _currentParticle.y += _currentParticle.speedY;
                 _currentParticle.x += _currentParticle.speedX;
-                _currentParticle.rotation = (rotationSegmentMaxDegree + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % rotationSegmentMaxDegree;
-                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / rotationSegmentMaxDegree * _totalFrames);
+                _currentParticle.rotation = (360 + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % 360;
+                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * _totalFrames);
 
                 //when out of stage recycle _currentParticle
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)

@@ -76,7 +76,7 @@ package engineClasses
             generator.minAlpha = _emitter.minAlpha;
             generator.maxAlpha = _emitter.maxAlpha;
             generator.alphaSmooth = _emitter.alphaSmooth;
-            generator.animSmooth = _emitter.rotationSegmentSmooth;
+            generator.animSmooth = _emitter.rotationSmooth;
             generator.render();
 
             _particlesBitmapSheet = generator.animSpriteSheet;

@@ -22,8 +22,8 @@ package engineClasses
                 //update properties
                 _currentParticle.y += _currentParticle.speedY;
                 _currentParticle.x += _currentParticle.speedX;
-                _currentParticle.rotation = (rotationSegmentMaxDegree + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % rotationSegmentMaxDegree;
-                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / rotationSegmentMaxDegree * rotationSegmentSmooth);
+                _currentParticle.rotation = (360 + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % 360;
+                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * rotationSmooth);
 
                 //when out of stage recycle _currentParticle
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
@@ -56,7 +56,7 @@ package engineClasses
             var flakeSprite: Sprite = new Sprite();
             flakeSprite.addChild(particle);
 
-            particlesBitmapSheet = new BitmapData(maxParticleSize * rotationSegmentSmooth, maxParticleSize * sizeSmooth, true, 0x000000);
+            particlesBitmapSheet = new BitmapData(maxParticleSize * rotationSmooth, maxParticleSize * sizeSmooth, true, 0x000000);
             var flakeBitmapData: BitmapData = new BitmapData(maxParticleSize, maxParticleSize, true, 0x000000);
             var size: Number;
 
@@ -65,12 +65,12 @@ package engineClasses
 
             for (var iSize: int = 0; iSize < sizeSmooth; iSize++)
             {
-                for (var iRotation: int = 0; iRotation < rotationSegmentSmooth; iRotation++)
+                for (var iRotation: int = 0; iRotation < rotationSmooth; iRotation++)
                 {
                     size = minParticleSize + (maxParticleSize - minParticleSize) / sizeSmooth * iSize;
                     particle.scaleX = particle.scaleY = size / maxParticleSize * defaultScale;
                     particle.x = particle.y = size / 2;
-                    particle.rotation = 360 / _rotationSegments / rotationSegmentSmooth * iRotation;
+                    particle.rotation = 360 / rotationSmooth * iRotation;
 
                     flakeBitmapData.fillRect(flakeBitmapData.rect, 0x000000);
                     flakeBitmapData.draw(flakeSprite, null, null, null, null, false);

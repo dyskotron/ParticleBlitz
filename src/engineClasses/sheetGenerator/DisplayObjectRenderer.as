@@ -8,41 +8,40 @@ package engineClasses.sheetGenerator
 
     public class DisplayObjectRenderer extends SpriteSheetRenderer
     {
-        private var _particleClass: Class;
+        private var _particleDO: DisplayObject;
 
-        public function DisplayObjectRenderer(aParticleClass: Class)
+        public function DisplayObjectRenderer(aParticleDO: DisplayObject)
         {
-            _particleClass = aParticleClass;
+            _particleDO = aParticleDO;
         }
 
         override protected function renderSpriteSheet(): void
         {
-            var particle: DisplayObject = new _particleClass();
-            var flakeSprite: Sprite = new Sprite();
-            flakeSprite.addChild(particle);
+            var particleSprite: Sprite = new Sprite();
+            particleSprite.addChild(_particleDO);
 
             _animSpriteSheet = new BitmapData(maxSize * animSmooth, maxSize * sizeSmooth, true, 0x000000);
-            var flakeBitmapData: BitmapData = new BitmapData(maxSize, maxSize, true, 0x000000);
+            var particleBitmapData: BitmapData = new BitmapData(maxSize, maxSize, true, 0x000000);
             var size: Number;
 
             //default scale of particle with max size
-            var defaultScale: Number = maxSize / Math.max(particle.width, particle.height);
+            var defaultScale: Number = maxSize / Math.max(_particleDO.width, _particleDO.height);
 
             for (var iSize: int = 0; iSize < sizeSmooth; iSize++)
             {
                 for (var iRotation: int = 0; iRotation < animSmooth; iRotation++)
                 {
                     size = minSize + (maxSize - minSize) / sizeSmooth * iSize;
-                    particle.scaleX = particle.scaleY = size / maxSize * defaultScale;
-                    particle.x = particle.y = size / 2;
-                    particle.rotation = 360 / animSmooth * iRotation;
+                    _particleDO.scaleX = _particleDO.scaleY = size / maxSize * defaultScale;
+                    _particleDO.x = _particleDO.y = size / 2;
+                    _particleDO.rotation = 360 / animSmooth * iRotation;
 
-                    flakeBitmapData.fillRect(flakeBitmapData.rect, 0x000000);
-                    flakeBitmapData.draw(flakeSprite, null, null, null, null, false);
+                    particleBitmapData.fillRect(particleBitmapData.rect, 0x000000);
+                    particleBitmapData.draw(particleSprite, null, null, null, null, false);
 
                     _destPoint.x = iRotation * maxSize;
                     _destPoint.y = iSize * maxSize;
-                    _animSpriteSheet.copyPixels(flakeBitmapData, flakeBitmapData.rect, _destPoint);
+                    _animSpriteSheet.copyPixels(particleBitmapData, particleBitmapData.rect, _destPoint);
                 }
             }
         }

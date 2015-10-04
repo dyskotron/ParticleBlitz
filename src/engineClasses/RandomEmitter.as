@@ -1,13 +1,13 @@
 package engineClasses
 {
-    public class RandomMovieClipEmitter extends ParticleEmitter
+    public class RandomEmitter extends ParticleEmitter
     {
-        public function RandomMovieClipEmitter()
+        public function RandomEmitter()
         {
             super();
         }
 
-        override public function drawFrame(): void
+        override public function updateVOs(): void
         {
 
             //update & draw all particles
@@ -25,7 +25,6 @@ package engineClasses
                 if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
                     resetParticle(_currentParticle);
 
-                //draw
                 _currentParticle = _currentParticle.nextParticle;
             }
         }
@@ -44,6 +43,38 @@ package engineClasses
 
             if (currentParticle.x < _particleAreaMinX)
                 currentParticle.x = _particleAreaMaxX;
+        }
+
+        /**
+         *  Creates desired number of particle VOs
+         */
+        override protected function createParticleVOs(): void
+        {
+            for (var i: int = 0; i < numParticles; i++)
+            {
+                var particle: ParticleVO = new ParticleVO();
+
+                particle.x = _particleAreaMinX + Math.random() * (_particleAreaMaxX - _particleAreaMinX);
+                particle.y = _particleAreaMinY + Math.random() * (_particleAreaMaxY - _particleAreaMinY);
+
+                particle.scaleIndex = Math.floor(Math.random() * sizeSmooth);
+
+                particle.size = minParticleSize + particle.scaleIndex * (maxParticleSize - minParticleSize) / sizeSmooth;
+
+                particle.alphaIndex = Math.floor(Math.random() * alphaSmooth);
+
+                particle.speedX = (minSpeedX + Math.random() * (maxSpeedX - minSpeedX));
+                particle.speedY = (minSpeedY + Math.random() * (maxSpeedY - minSpeedY));
+
+                particle.rotation = Math.random() * 360;
+                particle.rotationSpeed = minAnimSpeed + Math.random() * (maxAnimSpeed - minAnimSpeed);
+                if (animateBothDirections && Math.random() < 0.5)
+                    particle.rotationSpeed *= -1;
+
+                particle.nextParticle = _currentParticle;
+                _currentParticle = particle;
+            }
+            _firstParticle = particle;
         }
     }
 }

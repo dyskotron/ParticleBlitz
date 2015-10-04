@@ -2,8 +2,7 @@ package editorClasses
 {
     import engineClasses.ParticleEmitter;
     import engineClasses.ParticleEngine;
-    import engineClasses.RandomMovieClipEmitter;
-    import engineClasses.RandomParticleEmitter;
+    import engineClasses.PointEmitter;
 
     import flash.display.Sprite;
     import flash.events.Event;
@@ -60,14 +59,11 @@ package editorClasses
             if (animator)
                 animator.destroy();
 
-            emmiterClass = RandomParticleEmitter;
-            if (editorUI.ParticleKindClass == GoldAnim || editorUI.ParticleKindClass == CoinAnim)
-                emmiterClass = RandomMovieClipEmitter;
+            emmiterClass = PointEmitter;
 
             animator = new emmiterClass();
 
             // PARTICLES
-            animator.particleDOClass = editorUI.ParticleKindClass;
             animator.animateBothDirections = editorUI.animateBothDirectionsCheckbox.selected;
             animator.numParticles = editorUI.numParticlesSlider.value;
 
@@ -124,11 +120,6 @@ package editorClasses
              */
 
             engine.init(animator, new editorUI.ParticleKindClass());
-
-            if (!editorUI.particleRotationCheckbox.selected && !speedX && !speedY && !spreadX && !spreadY)
-            {
-                editorUI.showMessage("Heh, do you really need particle engineClasses for this?");
-            }
         }
 
     }

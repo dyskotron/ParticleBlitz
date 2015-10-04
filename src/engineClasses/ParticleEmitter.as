@@ -1,9 +1,5 @@
 package engineClasses
 {
-    import flash.display.BitmapData;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-
     public class ParticleEmitter
     {
         public var numParticles: Number = 250;
@@ -24,7 +20,7 @@ package engineClasses
         public var minSpeedY: Number = 1;
         public var maxSpeedY: Number = 2.5;
 
-        //rotation
+        //animation(rotation)
         public var minAnimSpeed: Number = -3;
         public var maxAnimSpeed: Number = -3;
         public var animSmooth: Number = 60;
@@ -35,33 +31,18 @@ package engineClasses
         public var _particleAreaMinY: int;
         public var _particleAreaMaxY: int;
 
-        protected var rotationSegmentMaxDegree: Number = 360;
-
         //=========//
 
-        private var _particleAreaHeight: Number;
-        private var _particleAreaWidth: Number;
+        protected var _particleAreaHeight: Number;
+        protected var _particleAreaWidth: Number;
 
         internal var _firstParticle: ParticleVO;
         protected var _currentParticle: ParticleVO;
-        protected var _sourceRect: Rectangle;
-        protected var _destPoint: Point = new Point();
-        protected var _alphaPoint: Point = new Point();
-
-        private var _particleDOClass: Class = SnowFlake;
-        internal var particlesBitmapSheet: BitmapData;
-        internal var alphaBitmapSheet: BitmapData;
-        protected var _screenBitmapData: BitmapData;
 
 
         public function ParticleEmitter()
         {
 
-        }
-
-        public function set particleDOClass(value: Class): void
-        {
-            _particleDOClass = value;
         }
 
         public function set particleAreaWidth(particleAreaWidth: int): void
@@ -74,45 +55,24 @@ package engineClasses
             _particleAreaHeight = particleAreaHeight;
         }
 
-        public function init(screenBitmapData: BitmapData): void
+        public function init(): void
         {
-            this._screenBitmapData = screenBitmapData;
             _particleAreaMinX = -maxParticleSize;
             _particleAreaMaxX = _particleAreaWidth + maxParticleSize;
             _particleAreaMinY = -maxParticleSize;
             _particleAreaMaxY = _particleAreaHeight + maxParticleSize;
-            _sourceRect = new Rectangle(0, 0, maxParticleSize, maxParticleSize);
 
             createParticleVOs();
         }
 
-        public function drawFrame(): void
+        public function updateVOs(): void
         {
 
-            //update & draw all particles
-            _currentParticle = _firstParticle;
-
-            while (_currentParticle)
-            {
-                //update properties
-                _currentParticle.y += _currentParticle.speedY;
-                _currentParticle.x += _currentParticle.speedX;
-                _currentParticle.rotation = (360 + (_currentParticle.rotation + _currentParticle.rotationSpeed)) % 360;
-                _currentParticle.rotationIndex = Math.floor(_currentParticle.rotation / 360 * animSmooth);
-
-                //when out of stage recycle _currentParticle
-                if (_currentParticle.y > _particleAreaMaxY || _currentParticle.y < _particleAreaMinY || _currentParticle.x > _particleAreaMaxX || _currentParticle.x < _particleAreaMinX)
-                    resetParticle(_currentParticle);
-
-                _currentParticle = _currentParticle.nextParticle;
-            }
         }
 
         public function destroy(): void
         {
             _currentParticle = null;
-            particlesBitmapSheet = null;
-            alphaBitmapSheet = null;
         }
 
         /**
@@ -127,38 +87,9 @@ package engineClasses
         /**
          *  Creates desired number of particle VOs
          */
-        private function createParticleVOs(): void
+        protected function createParticleVOs(): void
         {
-            for (var i: int = 0; i < numParticles; i++)
-            {
-                var particle: ParticleVO = new ParticleVO();
 
-                particle.x = _particleAreaMinX + Math.random() * (_particleAreaMaxX - _particleAreaMinX);
-                particle.y = _particleAreaMinY + Math.random() * (_particleAreaMaxY - _particleAreaMinY);
-
-                particle.scaleIndex = Math.floor(Math.random() * sizeSmooth);
-
-                particle.size = minParticleSize + particle.scaleIndex * (maxParticleSize - minParticleSize) / sizeSmooth;
-
-                particle.alphaIndex = Math.floor(Math.random() * alphaSmooth);
-
-                particle.speedX = (minSpeedX + Math.random() * (maxSpeedX - minSpeedX));
-                particle.speedY = (minSpeedY + Math.random() * (maxSpeedY - minSpeedY));
-
-                particle.rotation = Math.random() * 360;
-                particle.rotationSpeed = minAnimSpeed + Math.random() * (maxAnimSpeed - minAnimSpeed);
-                if (animateBothDirections && Math.random() < 0.5)
-                    particle.rotationSpeed *= -1;
-
-                particle.nextParticle = _currentParticle;
-                _currentParticle = particle;
-            }
-            _firstParticle = particle;
-        }
-
-        public function get particleDOClass(): Class
-        {
-            return _particleDOClass;
         }
     }
 }

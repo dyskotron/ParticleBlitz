@@ -69,13 +69,14 @@ package engineClasses
             _emitter.particleAreaWidth = _particleAreaWidth;
             _emitter.particleAreaHeight = _particleAreaHeight;
 
+            var isMovieClip: Boolean = aParticleDO is MovieClip && MovieClip(aParticleDO).totalFrames > 1;
             if (aParticleDO is MovieClip && MovieClip(aParticleDO).totalFrames > 1)
                 _emitter.animSmooth = MovieClip(aParticleDO).totalFrames;
 
-            _emitter.init(_screenBitmapData);
+            _emitter.init();
 
             //spriteSheet renderer
-            var generator: SpriteSheetRenderer = _emitter is RandomMovieClipEmitter ? new MovieClipRenderer(_emitter.particleDOClass) : new DisplayObjectRenderer(_emitter.particleDOClass);
+            var generator: SpriteSheetRenderer = isMovieClip ? new MovieClipRenderer(MovieClip(aParticleDO)) : new DisplayObjectRenderer(aParticleDO);
             generator.minSize = _emitter.minParticleSize;
             generator.maxSize = _emitter.maxParticleSize;
             generator.sizeSmooth = _emitter.sizeSmooth;
@@ -121,7 +122,7 @@ package engineClasses
             //erase screen
             _screenBitmapData.fillRect(_screenRect, 0x00000000);
 
-            _emitter.drawFrame();
+            _emitter.updateVOs();
 
             //===========================================
             _currentParticle = _emitter._firstParticle;
@@ -129,17 +130,19 @@ package engineClasses
             while (_currentParticle)
             {
                 //draw
-                _destPoint.x = _currentParticle.x;
-                _destPoint.y = _currentParticle.y;
+                if (_currentParticle.renderEnabled)
+                {
+                    _destPoint.x = _currentParticle.x;
+                    _destPoint.y = _currentParticle.y;
 
-                _sourceRect.width = _sourceRect.height = _currentParticle.size;
-                _sourceRect.x = _currentParticle.rotationIndex * _emitter.maxParticleSize;
-                _sourceRect.y = _currentParticle.scaleIndex * _emitter.maxParticleSize;
+                    _sourceRect.width = _sourceRect.height = _currentParticle.size;
+                    _sourceRect.x = _currentParticle.rotationIndex * _emitter.maxParticleSize;
+                    _sourceRect.y = _currentParticle.scaleIndex * _emitter.maxParticleSize;
 
-                _alphaPoint.x = _currentParticle.alphaIndex * _emitter.maxParticleSize;
+                    _alphaPoint.x = _currentParticle.alphaIndex * _emitter.maxParticleSize;
 
-                _screenBitmapData.copyPixels(_particlesBitmapSheet, _sourceRect, _destPoint, _alphaBitmapSheet, _alphaPoint, true);
-
+                    _screenBitmapData.copyPixels(_particlesBitmapSheet, _sourceRect, _destPoint, _alphaBitmapSheet, _alphaPoint, true);
+                }
                 _currentParticle = _currentParticle.nextParticle;
             }
 

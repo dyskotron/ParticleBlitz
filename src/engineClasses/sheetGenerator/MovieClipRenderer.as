@@ -8,35 +8,34 @@ package engineClasses.sheetGenerator
 
     public class MovieClipRenderer extends SpriteSheetRenderer
     {
-        private var _particleClass: Class;
+        private var _particleMC: MovieClip;
 
-        public function MovieClipRenderer(aParticleClass: Class)
+        public function MovieClipRenderer(aParticleMC: MovieClip)
         {
-            _particleClass = aParticleClass;
+            _particleMC = aParticleMC;
         }
 
         override protected function renderSpriteSheet(): void
         {
-            var particle: MovieClip = new _particleClass();
             var flakeSprite: Sprite = new Sprite();
-            flakeSprite.addChild(particle);
-            var totalFrames: int = particle.totalFrames;
+            flakeSprite.addChild(_particleMC);
+            var totalFrames: int = _particleMC.totalFrames;
 
             _animSpriteSheet = new BitmapData(maxSize * totalFrames, maxSize * sizeSmooth, true, 0x000000);
             var flakeBitmapData: BitmapData = new BitmapData(maxSize, maxSize, true, 0x000000);
             var size: Number;
 
             //default scale of particle with max size
-            var defaultScale: Number = maxSize / Math.max(particle.width, particle.height);
+            var defaultScale: Number = maxSize / Math.max(_particleMC.width, _particleMC.height);
 
             for (var iSize: int = 0; iSize <= sizeSmooth; iSize++)
             {
                 for (var iRotation: int = 0; iRotation < totalFrames; iRotation++)
                 {
                     size = minSize + (maxSize - minSize) / sizeSmooth * iSize;
-                    particle.scaleX = particle.scaleY = size / maxSize * defaultScale;
-                    particle.x = particle.y = size / 2;
-                    particle.gotoAndStop(iRotation + 1);
+                    _particleMC.scaleX = _particleMC.scaleY = size / maxSize * defaultScale;
+                    _particleMC.x = _particleMC.y = size / 2;
+                    _particleMC.gotoAndStop(iRotation + 1);
 
                     flakeBitmapData.fillRect(flakeBitmapData.rect, 0x000000);
                     flakeBitmapData.draw(flakeSprite, null, null, null, null, false);

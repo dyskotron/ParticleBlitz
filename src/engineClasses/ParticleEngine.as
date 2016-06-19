@@ -18,10 +18,9 @@ package engineClasses
      */
     public final class ParticleEngine extends Sprite
     {
-
         // rendering area
-        private var _particleAreaWidth: int = 740;
-        private var _particleAreaHeight: int = 640;
+        private var _width: int = 740;
+        private var _height: int = 640;
 
         //// --------------------------------------------------------------------- ////
 
@@ -30,8 +29,7 @@ package engineClasses
         private var _screenBitMap: Bitmap;
         private var _screenBitmapData: BitmapData;
 
-        private var _screenRect: Rectangle = new Rectangle(0, 0, _particleAreaWidth, _particleAreaHeight);
-
+        private var _screenRect: Rectangle;
 
         //emitter vars
         //protected var _firstParticle: ParticleVO;
@@ -47,8 +45,9 @@ package engineClasses
          */
         public function ParticleEngine(width: Number, height: Number)
         {
-            _particleAreaWidth = width;
-            _particleAreaHeight = height;
+            _width = width;
+            _height = height;
+            _screenRect = new Rectangle(0, 0, _width, _height);
             super();
         }
 
@@ -60,14 +59,14 @@ package engineClasses
             _emitter = aAnimator;
 
             //CREATE SCREEN BITMAP
-            _screenBitmapData = new BitmapData(_particleAreaWidth, _particleAreaHeight, true);
+            _screenBitmapData = new BitmapData(_width, _height, true);
             _screenBitmapData.fillRect(_screenRect, 0x0000000);
             _screenBitMap = new Bitmap(_screenBitmapData);
             addChild(_screenBitMap);
 
             //INIT EMMITER
-            _emitter.particleAreaWidth = _particleAreaWidth;
-            _emitter.particleAreaHeight = _particleAreaHeight;
+            _emitter.particleAreaWidth = _width;
+            _emitter.particleAreaHeight = _height;
 
             var isMovieClip: Boolean = aParticleDO is MovieClip && MovieClip(aParticleDO).totalFrames > 1;
             if (aParticleDO is MovieClip && MovieClip(aParticleDO).totalFrames > 1)
@@ -113,6 +112,7 @@ package engineClasses
 
         /**
          * All particle rendering happen here.
+         *               `
          * @param event
          */
         private function enterFrameHandler(event: Event): void
@@ -146,10 +146,19 @@ package engineClasses
                 _currentParticle = _currentParticle.nextParticle;
             }
 
-
             //===========================================
 
             _screenBitmapData.unlock();
+        }
+
+        override public function get width(): Number
+        {
+            return _width;
+        }
+
+        override public function get height(): Number
+        {
+            return _height;
         }
     }
 }

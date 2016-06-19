@@ -14,6 +14,13 @@ package editorClasses
     import flash.geom.Rectangle;
     import flash.utils.Timer;
 
+    import particles.Badger;
+    import particles.Banana;
+    import particles.CoinAnim;
+    import particles.GoldAnim;
+    import particles.Shoe;
+    import particles.SnowFlake;
+
     /**
      * UI for particle engine settings
      */
@@ -41,7 +48,7 @@ package editorClasses
         public var snowFlake: RadioButton;
         public var banana: RadioButton;
         public var shoe: RadioButton;
-        public var jens: RadioButton;
+        public var circle: RadioButton;
         public var gold: RadioButton;
         public var coin: RadioButton;
 
@@ -72,9 +79,12 @@ package editorClasses
         private const UI_XML: Class;
         private var changeEventTimer: Timer;
 
+        private var _emmiterX: Number;
+        private var _emmiterY: Number;
+
 
         //TODO disablovaci checkboxy prehodit za labely dat jim label animate enabled, a dat za ne enabled jednoduchej slider misto range slideru
-        //nebo este lip vymenit ho misto rangle slideru vcetne zmeny labelu atd
+        //nebo este lip vymenit ho misto range slideru vcetne zmeny labelu atd
         //poladit rangle slidery aby ukazovaly spravne cisla
         /**
          * Constructor
@@ -94,11 +104,21 @@ package editorClasses
             config.parseXML(XML(new UI_XML));
             configComplete = true;
 
-            //direction editorLKJ
+            //direction editor
             directionEditor = new DirectionEditor(directionEditorRect.width, directionEditorRect.height);
             addChild(directionEditor);
             directionEditor.x = -directionEditorRect.width;
             directionEditor.addEventListener(Event.CHANGE, directionEditor_changeHandler);
+        }
+
+        public function get emmiterX(): Number
+        {
+            return _emmiterX;
+        }
+
+        public function get emmiterY(): Number
+        {
+            return _emmiterY;
         }
 
         //ALERT
@@ -136,8 +156,8 @@ package editorClasses
                 KindClass = Banana;
             else if (shoe.selected)
                 KindClass = Shoe;
-            else if (jens.selected)
-                KindClass = Jens;
+            else if (circle.selected)
+                KindClass = CircleGradient;
             else if (coin.selected)
                 KindClass = CoinAnim;
             else if (gold.selected)
@@ -207,6 +227,7 @@ package editorClasses
         public function onParticleKindChange(e: Event): void
         {
             enginePropertyChanged();
+            trace("_MO_", this, circle.selected);
         }
 
         // MOVE
@@ -242,10 +263,14 @@ package editorClasses
         //DIRECTION EDITOR
         private function directionEditor_changeHandler(event: Event): void
         {
+            particleSpeedXSlider.value = directionEditor.xDirection * particleSpeedXSlider.maximum;
             particleSpeedXLabel.text = "Speed X: " + Math.floor(particleSpeedXSlider.value * 10) / 10;
-            particleSpeedXSlider.value = directionEditor.xDirection;
+
+            particleSpeedYSlider.value = directionEditor.yDirection * particleSpeedYSlider.maximum;
             particleSpeedYLabel.text = "Speed Y: " + Math.floor(particleSpeedYSlider.value * 10) / 10;
-            particleSpeedYSlider.value = directionEditor.yDirection;
+
+            _emmiterX = directionEditor.emmiterX;
+            _emmiterY = directionEditor.emmiterY;
 
             enginePropertyChanged();
         }

@@ -17,7 +17,8 @@
             <RadioButton id="banana" label="Banana" groupName="particleKind" event="click:onParticleKindChange"/>
             <RadioButton id="shoe" label="Shoe" groupName="particleKind" event="click:onParticleKindChange"/>
             <RadioButton id="badger" label="Killer Badger" groupName="particleKind" event="click:onParticleKindChange"/>
-            <RadioButton id="jens" label="Jens" groupName="particleKind" event="click:onParticleKindChange"/>
+            <RadioButton id="circle" label="Radial gradient" groupName="particleKind"
+                         event="click:onParticleKindChange"/>
             <RadioButton id="gold" label="Gold" groupName="particleKind" event="click:onParticleKindChange"/>
             <RadioButton id="coin" label="Coin" groupName="particleKind" event="click:onParticleKindChange"/>
         </VBox>

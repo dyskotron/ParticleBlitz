@@ -14,11 +14,10 @@ package editorClasses
         public var xDirection: Number;
         public var yDirection: Number;
 
-        private const MAX_DIR_EDITOR_SPEED: Number = 20;
-
         private var mouseDown: Boolean = false;
         private var startPoint: Point = new Point();
-        private var maxDirectionLength: Number;
+        private var _width: Number;
+        private var _height: Number;
 
         public function DirectionEditor(width: Number, height: Number)
         {
@@ -31,8 +30,18 @@ package editorClasses
             mouseSprite.addEventListener(MouseEvent.MOUSE_UP, mouseUpHandler);
             mouseSprite.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
 
-            maxDirectionLength = Math.min(width, height);
+            _width = width;
+            _height = height;
+        }
 
+        public function get emmiterX(): Number
+        {
+            return startPoint.x;
+        }
+
+        public function get emmiterY(): Number
+        {
+            return startPoint.y;
         }
 
         private function mouseDownHandler(event: MouseEvent): void
@@ -47,20 +56,10 @@ package editorClasses
             mouseDown = false;
             this.graphics.clear();
 
-            xDirection = (event.localX - startPoint.x) / maxDirectionLength * MAX_DIR_EDITOR_SPEED;
-            yDirection = (event.localY - startPoint.y) / maxDirectionLength * MAX_DIR_EDITOR_SPEED;
-
-            // MAX_DIR_EDITOR_SPEED exceeded - scale it
-            if (xDirection > MAX_DIR_EDITOR_SPEED || yDirection > MAX_DIR_EDITOR_SPEED)
-            {
-                var overlappingDirectionValue: Number = Math.max(xDirection, yDirection);
-                var ratio: Number = MAX_DIR_EDITOR_SPEED / overlappingDirectionValue;
-                xDirection *= ratio;
-                yDirection *= ratio;
-            }
+            xDirection = (event.localX - startPoint.x) / _width;
+            yDirection = (event.localY - startPoint.y) / _height;
 
             dispatchEvent(new Event(Event.CHANGE));
-
         }
 
         private function mouseMoveHandler(event: MouseEvent): void

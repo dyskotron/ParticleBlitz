@@ -109,6 +109,9 @@ package editorClasses
                 animator.minAnimSpeed = animator.maxAnimSpeed = 0;
             }
 
+            animator.initX = editorUI.emmiterX;
+            animator.initY = editorUI.emmiterY;
+
             /**
              try
              {

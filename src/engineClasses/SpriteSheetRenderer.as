@@ -7,7 +7,6 @@ package engineClasses
     public class SpriteSheetRenderer
     {
         //needs to be set ===========================
-
         public var minSize: Number;
         public var maxSize: Number;
         public var sizeSmooth: Number;
@@ -17,14 +16,13 @@ package engineClasses
         public var alphaSmooth: Number;
 
         public var animSmooth: Number;
-        //===========================================
 
+        //===========================================
         protected var _animSpriteSheet: BitmapData;
         protected var _alphaSpriteSheet: BitmapData;
 
         //rendering helper vars
         protected var _destPoint: Point = new Point();
-        protected var _alphaPoint: Point = new Point();
 
         /**
          * Renders Bitmapdata needed for bitmap blitting in particle engine

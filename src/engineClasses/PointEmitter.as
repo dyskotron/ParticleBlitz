@@ -2,11 +2,6 @@ package engineClasses
 {
     public class PointEmitter extends ParticleEmitter
     {
-        public var maxLifeTime: Number = 90;
-
-        public var gravityX: Number = 0;
-        public var gravityY: Number = 1.5;
-
         public function PointEmitter()
         {
             super();
@@ -26,7 +21,7 @@ package engineClasses
                 if (_currentParticle.lifeTime >= 0)
                 {
                     //if (_currentParticle.lifeTime == 0)
-                        _currentParticle.renderEnabled = true;
+                    _currentParticle.renderEnabled = true;
 
                     _currentParticle.y += _currentParticle.speedY;
                     _currentParticle.x += _currentParticle.speedX;
@@ -51,8 +46,8 @@ package engineClasses
         override protected function resetParticle(currentParticle: ParticleVO): void
         {
             currentParticle.lifeTime = 0;
-            currentParticle.x = _particleAreaMinX + _particleAreaWidth / 2;
-            currentParticle.y = _particleAreaMinY + _particleAreaHeight / 2;
+            currentParticle.x = initX + (Math.random() * 2 - 1) * varianceInitX;
+            currentParticle.y = initY + (Math.random() * 2 - 1) * varianceInitY;
             currentParticle.speedX = (minSpeedX + Math.random() * (maxSpeedX - minSpeedX));
             currentParticle.speedY = (minSpeedY + Math.random() * (maxSpeedY - minSpeedY));
         }
@@ -69,8 +64,8 @@ package engineClasses
                 particle.lifeTime = -maxLifeTime * (i / numParticles);
                 particle.renderEnabled = false;
 
-                particle.x = _particleAreaMinX + _particleAreaWidth / 2;
-                particle.y = _particleAreaMinY + _particleAreaHeight / 2;
+                particle.x = initX + (Math.random() * 2 - 1) * varianceInitX;
+                particle.y = initY + (Math.random() * 2 - 1) * varianceInitY;
 
                 particle.scaleIndex = Math.floor(Math.random() * sizeSmooth);
 

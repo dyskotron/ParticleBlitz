@@ -4,6 +4,12 @@ package engineClasses
     {
         public var numParticles: Number = 250;
 
+        //position
+        public var initX: Number;
+        public var initY: Number;
+        public var varianceInitX: Number = 20;
+        public var varianceInitY: Number = 200;
+
         //size
         public var minParticleSize: Number = 10;
         public var maxParticleSize: Number = 20;
@@ -40,6 +46,12 @@ package engineClasses
         protected var _currentParticle: ParticleVO;
 
 
+        //TODO: currently not supported by editor
+        public var maxLifeTime: Number = 90;
+        public var gravityX: Number = 0;
+        public var gravityY: Number = 0;
+
+
         public function ParticleEmitter()
         {
 
@@ -61,6 +73,9 @@ package engineClasses
             _particleAreaMaxX = _particleAreaWidth + maxParticleSize;
             _particleAreaMinY = -maxParticleSize;
             _particleAreaMaxY = _particleAreaHeight + maxParticleSize;
+
+            initX ||= _particleAreaMinX + _particleAreaWidth / 2;
+            initY ||= _particleAreaMinY + _particleAreaHeight / 2;
 
             createParticleVOs();
         }

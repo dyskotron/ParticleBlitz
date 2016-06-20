@@ -53,8 +53,6 @@ package editorClasses
             if (!editorUI.configComplete)
                 return;
 
-            editorUI.hideMessage();
-
             engine.destroy();
             if (animator)
                 animator.destroy();
@@ -66,6 +64,23 @@ package editorClasses
             // PARTICLES
             animator.animateBothDirections = editorUI.animateBothDirectionsCheckbox.selected;
             animator.numParticles = editorUI.numParticlesSlider.value;
+
+            //Spawn position
+            animator.initX = editorUI.particleSpawnXSlider.value;
+            animator.initX = editorUI.particleSpawnYSlider.value;
+            animator.initXSpread = editorUI.particleSpawnSpreadXSlider.value;
+            animator.initYSpread = editorUI.particleSpawnSpreadYSlider.value;
+
+            //speed
+            var speedX: Number = editorUI.particleSpeedXSlider.value;
+            var spreadX: Number = editorUI.particleSpreadXSlider.value;
+            var speedY: Number = editorUI.particleSpeedYSlider.value;
+            var spreadY: Number = editorUI.particleSpreadYSlider.value;
+
+            animator.minSpeedX = speedX - spreadX / 2;
+            animator.maxSpeedX = speedX + spreadX / 2;
+            animator.minSpeedY = speedY - spreadY / 2;
+            animator.maxSpeedY = speedY + spreadY / 2;
 
             //size
             animator.minParticleSize = editorUI.particleSizeRangeSlider.lowValue;
@@ -87,17 +102,6 @@ package editorClasses
                 animator.alphaSmooth = animator.minAlpha = animator.maxAlpha = 1;
             }
 
-            //speed
-            var speedX: Number = editorUI.particleSpeedXSlider.value;
-            var spreadX: Number = editorUI.particleSpreadXSlider.value;
-            var speedY: Number = editorUI.particleSpeedYSlider.value;
-            var spreadY: Number = editorUI.particleSpreadYSlider.value;
-
-            animator.minSpeedX = speedX - spreadX / 2;
-            animator.maxSpeedX = speedX + spreadX / 2;
-            animator.minSpeedY = speedY - spreadY / 2;
-            animator.maxSpeedY = speedY + spreadY / 2;
-
             //rotation
             animator.minAnimSpeed = editorUI.particleRotationRangeSlider.lowValue;
             animator.maxAnimSpeed = editorUI.particleRotationRangeSlider.highValue;
@@ -109,18 +113,17 @@ package editorClasses
                 animator.minAnimSpeed = animator.maxAnimSpeed = 0;
             }
 
-            animator.initX = editorUI.emmiterX;
-            animator.initY = editorUI.emmiterY;
+            animator.initX = editorUI.particleSpawnXSlider.value;
+            animator.initY = editorUI.particleSpawnYSlider.value;
 
-            /**
+            /*
              try
              {
-                 engine.init(animator);
+             engine.init(animator, new editorUI.ParticleKindClass());
              } catch (e: Error)
              {
-                 editorUI.showMessage("Sprite sheet is too big, lower particle size, size smooth, rotation smooth or alpha smooth");
-             }
-             */
+             editorUI.showMessage("Sprite sheet is too big, lower particle size, size smooth, rotation smooth or alpha smooth");
+             }*/
 
             engine.init(animator, new editorUI.ParticleKindClass());
         }

@@ -7,8 +7,8 @@ package engineClasses
         //position
         public var initX: Number;
         public var initY: Number;
-        public var varianceInitX: Number = 20;
-        public var varianceInitY: Number = 200;
+        public var initXSpread: Number = 20;
+        public var initYSpread: Number = 200;
 
         //size
         public var minParticleSize: Number = 10;

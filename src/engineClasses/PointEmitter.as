@@ -46,8 +46,8 @@ package engineClasses
         override protected function resetParticle(currentParticle: ParticleVO): void
         {
             currentParticle.lifeTime = 0;
-            currentParticle.x = initX + (Math.random() * 2 - 1) * varianceInitX;
-            currentParticle.y = initY + (Math.random() * 2 - 1) * varianceInitY;
+            currentParticle.x = initX + (Math.random() * 2 - 1) * initXSpread;
+            currentParticle.y = initY + (Math.random() * 2 - 1) * initYSpread;
             currentParticle.speedX = (minSpeedX + Math.random() * (maxSpeedX - minSpeedX));
             currentParticle.speedY = (minSpeedY + Math.random() * (maxSpeedY - minSpeedY));
         }
@@ -64,8 +64,8 @@ package engineClasses
                 particle.lifeTime = -maxLifeTime * (i / numParticles);
                 particle.renderEnabled = false;
 
-                particle.x = initX + (Math.random() * 2 - 1) * varianceInitX;
-                particle.y = initY + (Math.random() * 2 - 1) * varianceInitY;
+                particle.x = initX + (Math.random() * 2 - 1) * initXSpread;
+                particle.y = initY + (Math.random() * 2 - 1) * initYSpread;
 
                 particle.scaleIndex = Math.floor(Math.random() * sizeSmooth);
 

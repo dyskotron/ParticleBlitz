@@ -32,14 +32,23 @@ package editorClasses
 
         //Sliders
         public var numParticlesSlider: HSlider;
+
         public var particleSizeRangeSlider: HRangeSlider;
         public var particleSizeSmoothSlider: HSlider;
+
         public var particleAlphaRangeSlider: HRangeSlider;
         public var particleAlphaSmoothSlider: HSlider;
+
         public var particleSpeedXSlider: HSlider;
         public var particleSpreadXSlider: HSlider;
         public var particleSpeedYSlider: HSlider;
         public var particleSpreadYSlider: HSlider;
+
+        public var particleSpawnXSlider: HSlider;
+        public var particleSpawnSpreadXSlider: HSlider;
+        public var particleSpawnYSlider: HSlider;
+        public var particleSpawnSpreadYSlider: HSlider;
+
         public var particleRotationRangeSlider: HRangeSlider;
         public var particleRotationSegmentsSlider: HSlider;
         public var particleRotationSmoothSlider: HSlider;
@@ -54,17 +63,25 @@ package editorClasses
 
         //Labels
         public var numParticlesLabel: Label;
+
         public var particleSizeRangeLabel: Label;
         public var particleSizeSmoothLabel: Label;
         public var particleAlphaRangeLabel: Label;
         public var particleAlphaSmoothLabel: Label;
+
         public var particleRotationRangeLabel: Label;
         public var particleRotationSegmentsLabel: Label;
         public var particleRotationSmoothLabel: Label;
+
         public var particleSpeedYLabel: Label;
         public var particleSpreadYLabel: Label;
-        public var particleSpreadXLabel: Label;
         public var particleSpeedXLabel: Label;
+        public var particleSpreadXLabel: Label;
+
+        public var particleSpawnYLabel: Label;
+        public var particleSpawnSpreadYLabel: Label;
+        public var particleSpawnXLabel: Label;
+        public var particleSpawnSpreadXLabel: Label;
 
         //CheckBoxes
         public var particleSizeCheckbox: CheckBox;
@@ -82,10 +99,9 @@ package editorClasses
         private var _emmiterX: Number;
         private var _emmiterY: Number;
 
-
         //TODO disablovaci checkboxy prehodit za labely dat jim label animate enabled, a dat za ne enabled jednoduchej slider misto range slideru
         //nebo este lip vymenit ho misto range slideru vcetne zmeny labelu atd
-        //poladit rangle slidery aby ukazovaly spravne cisla
+        //poladit range slidery aby ukazovaly spravne cisla
         /**
          * Constructor
          * @param directionEditorRect
@@ -93,8 +109,9 @@ package editorClasses
         public function EditorUI(directionEditorRect: Rectangle)
         {
             changeEventTimer = new Timer(300, 1);
-            changeEventTimer.addEventListener(TimerEvent.TIMER, changeEventTimerListener)
+            changeEventTimer.addEventListener(TimerEvent.TIMER, changeEventTimerListener);
             this.directionEditorRect = directionEditorRect;
+
             //graphics
             this.graphics.beginFill(0x005566);
             this.graphics.drawRect(0, 0, 400, 640);
@@ -109,6 +126,11 @@ package editorClasses
             addChild(directionEditor);
             directionEditor.x = -directionEditorRect.width;
             directionEditor.addEventListener(Event.CHANGE, directionEditor_changeHandler);
+
+            particleSpawnXSlider.maximum = directionEditorRect.width;
+            particleSpawnYSlider.maximum = directionEditorRect.height;
+            particleSpawnSpreadXSlider.maximum = directionEditorRect.width / 2;
+            particleSpawnSpreadYSlider.maximum = directionEditorRect.height / 2;
         }
 
         public function get emmiterX(): Number
@@ -165,6 +187,8 @@ package editorClasses
 
             return KindClass;
         }
+
+        //region ========================================== UI EVENT HANDLERS =========================================
 
         // NUM PARTICLES
         public function onNumParticlesChange(e: Event): void
@@ -227,7 +251,31 @@ package editorClasses
         public function onParticleKindChange(e: Event): void
         {
             enginePropertyChanged();
-            trace("_MO_", this, circle.selected);
+        }
+
+        // SPAWN
+        public function onParticleSpawnXChange(e: Event): void
+        {
+            particleSpawnXLabel.text = "Spawn X: " + Math.floor(particleSpawnXSlider.value);
+            enginePropertyChanged();
+        }
+
+        public function onParticleSpawnSpreadXChange(e: Event): void
+        {
+            particleSpawnSpreadXLabel.text = "Spread X: " + Math.floor(particleSpawnSpreadXSlider.value);
+            enginePropertyChanged();
+        }
+
+        public function onParticleSpawnYChange(e: Event): void
+        {
+            particleSpawnYLabel.text = "Spread X: " + Math.floor(particleSpawnYSlider.value);
+            enginePropertyChanged();
+        }
+
+        public function onParticleSpawnSpreadYChange(e: Event): void
+        {
+            particleSpawnSpreadYLabel.text = "Spread X: " + Math.floor(particleSpawnSpreadYSlider.value);
+            enginePropertyChanged();
         }
 
         // MOVE
@@ -260,6 +308,8 @@ package editorClasses
             enginePropertyChanged();
         }
 
+        //endregion
+
         //DIRECTION EDITOR
         private function directionEditor_changeHandler(event: Event): void
         {
@@ -269,8 +319,13 @@ package editorClasses
             particleSpeedYSlider.value = directionEditor.yDirection * particleSpeedYSlider.maximum;
             particleSpeedYLabel.text = "Speed Y: " + Math.floor(particleSpeedYSlider.value * 10) / 10;
 
-            _emmiterX = directionEditor.emmiterX;
-            _emmiterY = directionEditor.emmiterY;
+            particleSpawnXSlider.value = directionEditor.emmiterX;
+            particleSpawnYSlider.value = directionEditor.emmiterY;
+
+            particleSpawnXSlider.value = directionEditor.emmiterX;
+            onParticleSpawnXChange(null);
+            particleSpawnYSlider.value = directionEditor.emmiterY;
+            onParticleSpawnYChange(null);
 
             enginePropertyChanged();
         }
@@ -280,6 +335,7 @@ package editorClasses
         {
             changeEventTimer.stop();
             changeEventTimer.start();
+            hideMessage();
         }
 
         //DISPATCH CHANGE EVENT

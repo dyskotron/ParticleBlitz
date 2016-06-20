@@ -1,6 +1,8 @@
 package editorClasses
 {
+    import engineClasses.ParticleEmitter;
     import engineClasses.ParticleEngine;
+    import engineClasses.PointEmitter;
 
     import flash.display.Sprite;
     import flash.events.Event;
@@ -14,18 +16,20 @@ package editorClasses
          */
 
         private var engine: ParticleEngine;
+        private var animator: ParticleEmitter;
+        private var emmiterClass: Class;
         private var editorUI: EditorUI;
         private var valuesChanged: Boolean = false;
 
         /**
          * Constructor
          */
-        public function ParticleEditor(engine: ParticleEngine)
+        public function ParticleEditor(aEngine: ParticleEngine)
         {
-            this.engine = engine;
+            engine = aEngine;
 
             //Editor UI
-            editorUI = new EditorUI(new Rectangle(engine.x, engine.y, engine.width, engine.height));
+            editorUI = new EditorUI(new Rectangle(aEngine.x, aEngine.y, aEngine.width, aEngine.height));
             editorUI.addEventListener(Event.CHANGE, editorUI_changeHandler);
             addChild(editorUI);
         }
@@ -49,32 +53,23 @@ package editorClasses
             if (!editorUI.configComplete)
                 return;
 
-            editorUI.hideMessage();
-
             engine.destroy();
+            if (animator)
+                animator.destroy();
+
+            emmiterClass = PointEmitter;
+
+            animator = new emmiterClass();
 
             // PARTICLES
-            engine.ParticleDOClass = editorUI.ParticleKindClass;
-            engine.numFlakes = editorUI.numParticlesSlider.value;
+            animator.animateBothDirections = editorUI.animateBothDirectionsCheckbox.selected;
+            animator.numParticles = editorUI.numParticlesSlider.value;
 
-            //size
-            engine.minParticleSize = editorUI.particleSizeRangeSlider.lowValue;
-            engine.maxParticleSize = editorUI.particleSizeRangeSlider.highValue;
-            engine.sizeSmooth = editorUI.particleSizeSmoothSlider.value;
-            if (!editorUI.particleSizeCheckbox.selected)
-            {
-                engine.sizeSmooth = 1;
-                engine.minParticleSize = engine.maxParticleSize;
-            }
-
-            //alpha
-            engine.minAlpha = editorUI.particleAlphaRangeSlider.lowValue;
-            engine.maxAlpha = editorUI.particleAlphaRangeSlider.highValue;
-            engine.alphaSmooth = editorUI.particleAlphaSmoothSlider.value;
-            if (!editorUI.particleAlphaCheckbox.selected)
-            {
-                engine.alphaSmooth = engine.minAlpha = engine.maxAlpha = 1;
-            }
+            //Spawn position
+            animator.initX = editorUI.particleSpawnXSlider.value;
+            animator.initX = editorUI.particleSpawnYSlider.value;
+            animator.initXSpread = editorUI.particleSpawnSpreadXSlider.value;
+            animator.initYSpread = editorUI.particleSpawnSpreadYSlider.value;
 
             //speed
             var speedX: Number = editorUI.particleSpeedXSlider.value;
@@ -82,53 +77,56 @@ package editorClasses
             var speedY: Number = editorUI.particleSpeedYSlider.value;
             var spreadY: Number = editorUI.particleSpreadYSlider.value;
 
-            engine.minSpeedX = speedX - spreadX / 2;
-            engine.maxSpeedX = speedX + spreadX / 2;
-            engine.minSpeedY = speedY - spreadY / 2;
-            engine.maxSpeedY = speedY + spreadY / 2;
+            animator.minSpeedX = speedX - spreadX / 2;
+            animator.maxSpeedX = speedX + spreadX / 2;
+            animator.minSpeedY = speedY - spreadY / 2;
+            animator.maxSpeedY = speedY + spreadY / 2;
+
+            //size
+            animator.minParticleSize = editorUI.particleSizeRangeSlider.lowValue;
+            animator.maxParticleSize = editorUI.particleSizeRangeSlider.highValue;
+            animator.sizeSmooth = editorUI.particleSizeSmoothSlider.value;
+
+            if (!editorUI.particleSizeCheckbox.selected)
+            {
+                animator.sizeSmooth = 1;
+                animator.minParticleSize = animator.maxParticleSize;
+            }
+
+            //alpha
+            animator.minAlpha = editorUI.particleAlphaRangeSlider.lowValue;
+            animator.maxAlpha = editorUI.particleAlphaRangeSlider.highValue;
+            animator.alphaSmooth = editorUI.particleAlphaSmoothSlider.value;
+            if (!editorUI.particleAlphaCheckbox.selected)
+            {
+                animator.alphaSmooth = animator.minAlpha = animator.maxAlpha = 1;
+            }
 
             //rotation
-            engine.minRotationSpeed = editorUI.particleRotationRangeSlider.lowValue;
-            engine.maxRotationSpeed = editorUI.particleRotationRangeSlider.highValue;
-            engine.rotationSegments = editorUI.particleRotationSegmentsSlider.value;
-            engine.rotationSegmentSmooth = editorUI.particleRotationSmoothSlider.value;
-            engine.rotationSegmentMaxDegree = 360 / engine.rotationSegments;
+            animator.minAnimSpeed = editorUI.particleRotationRangeSlider.lowValue;
+            animator.maxAnimSpeed = editorUI.particleRotationRangeSlider.highValue;
+            animator.animSmooth = editorUI.particleRotationSmoothSlider.value;
+
             if (!editorUI.particleRotationCheckbox.selected)
             {
-                engine.rotationSegmentSmooth = 1;
-                engine.minRotationSpeed = engine.maxRotationSpeed = 0;
+                animator.animSmooth = 1;
+                animator.minAnimSpeed = animator.maxAnimSpeed = 0;
             }
 
-            // STAGE
-            engine.particleAreaWidth = 740;
-            engine.particleAreaHeight = 640;
-            engine.particleAreaMargin = engine.maxParticleSize;
-            trace(engine.particleAreaMargin);
-            engine.particleAreaMinX = -engine.particleAreaMargin;
-            engine.particleAreaMaxX = engine.particleAreaWidth + engine.particleAreaMargin;
-            engine.particleAreaMinY = -engine.particleAreaMargin;
-            engine.particleAreaMaxY = engine.particleAreaHeight + engine.particleAreaMargin;
-            trace(engine.particleAreaMinX);
+            animator.initX = editorUI.particleSpawnXSlider.value;
+            animator.initY = editorUI.particleSpawnYSlider.value;
 
-            // AREA WITHOUT RENDERING
-            engine.ignoreOmitRenderingArea = true; //ignore not rendering area
-            engine.omitRenderingAreaX = 110;
-            engine.omitRenderingAreaEndX = 630;
-            engine.omitRenderingAreaY = 120;
-            engine.omitRenderingAreaEndY = 440;
+            /*
+             try
+             {
+             engine.init(animator, new editorUI.ParticleKindClass());
+             } catch (e: Error)
+             {
+             editorUI.showMessage("Sprite sheet is too big, lower particle size, size smooth, rotation smooth or alpha smooth");
+             }*/
 
-            try
-            {
-                engine.init();
-            } catch (e: Error)
-            {
-                editorUI.showMessage("Sprite sheet is too big, lower particle size, size smooth, rotation smooth or alpha smooth");
-            }
-
-            if (!editorUI.particleRotationCheckbox.selected && !speedX && !spreadX && !speedY && !spreadY)
-            {
-                editorUI.showMessage("Heh, do you really need particle engineClasses for this?");
-            }
+            engine.init(animator, new editorUI.ParticleKindClass());
         }
+
     }
 }

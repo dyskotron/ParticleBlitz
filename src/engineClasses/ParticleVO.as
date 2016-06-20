@@ -21,6 +21,9 @@ package engineClasses
         public var nextParticle: ParticleVO;
         public var scaleIndex: int;
 
+        public var lifeTime: Number;
+        public var renderEnabled: Boolean = true;
+
         /**
          * Constructor
          */
